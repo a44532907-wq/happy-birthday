@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untuk Sayangku💖</title>
+
+<style>
+body {
+  background: url('foto.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow-x:hidden;
+}
+
+/* BACKGROUND GLOW */
+body::before {
+  content: "";
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2), transparent 70%);
+  animation: bgMove 10s linear infinite;
+  z-index: -1;
+}
+
+@keyframes bgMove {
+  from { transform: translate(-25%, -25%); }
+  to { transform: translate(0%, 0%); }
+}
+
+.screen {
+  display: none;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align:center;
+}
+
+.active {
+  display: flex;
+}
+
+button {
+  padding: 12px 25px;
+  border-radius: 30px;
+  border: none;
+  background: white;
+  color: #ff69b4;
+  font-weight:bold;
+}
+
+.gift {
+  width: 120px;
+  height: 120px;
+  background: pink;
+  border-radius: 15px;
+  cursor: pointer;
+  box-shadow: 0 0 20px white;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  50%{transform: scale(1.1);}
+}
+
+img {
+  width: 220px;
+  border-radius: 20px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: 1s;
+  box-shadow: 0 0 30px white;
+}
+
+.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.typing {
+  width: 80%;
+  font-size: 22px;
+  opacity: 0;
+  color: white;
+  text-shadow: 0 0 10px pink;
+}
+
+.showText {
+  opacity: 1;
+}
+
+/* LOVE BALON KADO */
+.heart, .balloon, .final-gift {
+  position: absolute;
+}
+
+@keyframes fall {
+  from {transform: translateY(-10vh);}
+  to {transform: translateY(100vh);}
+}
+
+@keyframes floatUp {
+  from {transform: translateY(100vh);}
+  to {transform: translateY(-10vh);}
+}
+
+@keyframes dropGift {
+  from {transform: translateY(-10vh);}
+  to {transform: translateY(100vh);}
+}
+
+.heart { animation: fall linear infinite; }
+.balloon { animation: floatUp linear infinite; }
+.final-gift { animation: dropGift linear infinite; }
+
+/* SPARKLE */
+.sparkle {
+  position: absolute;
+  color: white;
+  font-size: 10px;
+  animation: sparkleAnim linear infinite;
+}
+
+@keyframes sparkleAnim {
+  0% { transform: scale(0) translateY(0); opacity: 0; }
+  50% { transform: scale(1) translateY(-20px); opacity: 1; }
+  100% { transform: scale(0) translateY(-40px); opacity: 0; }
+}
+
+#fireworks {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 1 -->
+<div class="screen active" id="s1">
+  <h1>ANJAI KLIK ITU SAYANG 😆</h1>
+  <button onclick="next(2)">KLIK DISINI</button>
+</div>
+
+<!-- 2 -->
+<div class="screen" id="s2">
+  <h2>KLIK KOTAK ITU</h2>
+  <div class="gift" onclick="openGift()"></div>
+</div>
+
+<!-- 3 -->
+<div class="screen" id="s3">
+  <p class="typing" id="text"></p>
+  <img src="apa.jpg" id="photo">
+  <h2 id="ending" style="opacity:0;">aku sayang kamu ❤️</h2>
+</div>
+
+<!-- 4 FIREWORK -->
+<div class="screen" id="s4">
+  <canvas id="fireworks"></canvas>
+</div>
+
+<!-- 5 FINAL -->
+<div class="screen" id="s5">
+  <h1>TERIMA KASIH SAYANG SUDA MEWARNAI HIDUP AKU</h1>
+</div>
+
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let heartInterval, balloonInterval, giftInterval;
+
+/* PINDAH */
+function next(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+}
+
+/* OPEN */
+function openGift(){
+  next(3);
+
+  document.getElementById("music").play().catch(()=>{});
+
+  startTyping();
+  hearts();
+  balloons();
+  sparkleEffect();
+}
+
+/* TYPING */
+let msg = "Happy Birthday yaa, kesayanganku 💖 kamu itu dunia aku, alasan aku senyum setiap hari... semoga kamu selalu bahagia, selalu sehat, dan selalu ada di samping aku ❤️ aku sayang kamu lebih dari apapun 💕";
+
+let i = 0;
+
+function startTyping(){
+  let el = document.getElementById("text");
+  el.classList.add("showText");
+
+  el.innerHTML = "";
+  i = 0;
+
+  let interval = setInterval(()=>{
+    if(i < msg.length){
+      el.innerHTML += msg.charAt(i);
+      i++;
+    } else {
+      clearInterval(interval);
+      showPhoto();
+    }
+  }, 60);
+}
+
+/* FOTO */
+function showPhoto(){
+  document.getElementById("photo").classList.add("show");
+
+  setTimeout(()=>{
+    document.getElementById("ending").style.opacity = 1;
+  },800);
+
+  setTimeout(()=>{
+    next(4);
+    startFireworks();
+  },2000);
+}
+
+/* LOVE */
+function hearts(){
+  if(heartInterval) return;
+
+  heartInterval = setInterval(()=>{
+    let h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "💖";
+    h.style.left = Math.random()*100+"vw";
+    h.style.animationDuration = (Math.random()*3+4)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),7000);
+  },400);
+}
+
+/* BALON */
+function balloons(){
+  if(balloonInterval) return;
+
+  balloonInterval = setInterval(()=>{
+    let b = document.createElement("div");
+    b.className = "balloon";
+    b.innerHTML = "🎈";
+    b.style.left = Math.random()*100+"vw";
+    b.style.animationDuration = (Math.random()*4+4)+"s";
+    document.body.appendChild(b);
+    setTimeout(()=>b.remove(),8000);
+  },500);
+}
+
+/* SPARKLE */
+function sparkleEffect(){
+  setInterval(()=>{
+    let s = document.createElement("div");
+    s.className = "sparkle";
+    s.innerHTML = "✨";
+    s.style.left = Math.random()*100+"vw";
+    s.style.top = Math.random()*100+"vh";
+    s.style.animationDuration = (Math.random()*2+1)+"s";
+
+    document.body.appendChild(s);
+
+    setTimeout(()=>s.remove(),2000);
+  },200);
+}
+
+/* FIREWORK */
+function startFireworks(){
+  const canvas = document.getElementById("fireworks");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener("resize", ()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  let particles = [];
+
+  function createHeart(){
+    let cx = canvas.width/2;
+    let cy = canvas.height/2;
+
+    for(let t=0; t<Math.PI*2; t+=0.2){
+      let x = 16*Math.pow(Math.sin(t),3);
+      let y = 13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+
+      particles.push({
+        x: cx,
+        y: cy,
+        dx: x*0.3,
+        dy: -y*0.3,
+        life: 100
+      });
+    }
+  }
+
+  function animate(){
+    ctx.fillStyle = "rgba(0,0,0,0.2)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach((p,i)=>{
+      p.x += p.dx;
+      p.y += p.dy;
+      p.life--;
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,3,0,Math.PI*2);
+      ctx.fillStyle = "#ff69b4";
+      ctx.fill();
+
+      if(p.life <= 0){
+        particles.splice(i,1);
+      }
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  setInterval(createHeart,1200);
+  animate();
+
+  setTimeout(()=>{
+    next(5);
+    finalGifts();
+    stopMusic();
+  },15500);
+}
+
+/* KADO */
+function finalGifts(){
+  if(giftInterval) return;
+
+  giftInterval = setInterval(()=>{
+    let g = document.createElement("div");
+    g.className = "final-gift";
+    g.innerHTML = "🎁";
+    g.style.left = Math.random()*100+"vw";
+    g.style.animationDuration = (Math.random()*3+3)+"s";
+    document.body.appendChild(g);
+    setTimeout(()=>g.remove(),6000);
+  },250);
+}
+
+/* STOP MUSIC */
+function stopMusic(){
+  let m = document.getElementById("music");
+  m.pause();
+  m.currentTime = 0;
+}
+</script>
+
+</body>
+</html>
